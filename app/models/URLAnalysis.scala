@@ -5,5 +5,5 @@ package models
   */
 case class URLAnalysis(
  isValid: Boolean,
- status: Option[Int],
+ status: Int,
  data: Seq[(String, String)])

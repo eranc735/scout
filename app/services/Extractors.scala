@@ -26,6 +26,8 @@ trait DocExtractor {
 
 }
 
+case class DocElement(key: String, value: String)
+
 object HTMLVersionExtractor extends DocExtractor {
 
 
