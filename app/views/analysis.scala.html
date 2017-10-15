@@ -1,0 +1,28 @@
+@(analysis: Seq[(String, String)])
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Analyzer</title>
+</head>
+<body>
+
+<div>
+    <table class="table"  border="1">
+        <tbody>
+        <tdr>
+            <th>Attribute Name</th>
+            <th>Attribute Value</th>
+        </tdr>
+        @analysis.map { data =>
+         <tr>
+             <td>@data._1</td>
+             <td>@data._2</td>
+         </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
