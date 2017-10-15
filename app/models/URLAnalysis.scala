@@ -1,7 +1,5 @@
 package models
 
-import scala.concurrent.Future
-
 /**
   * Created by ERAN on 10/14/2017.
   */

@@ -9,7 +9,11 @@ import play.api.data.Forms._
 import play.api.libs.ws.WSClient
 import services._
 
-class Application @Inject() (implicit ws: WSClient) extends Controller with URLAnalyzeService{
+/**
+  * Created by ERAN on 10/14/2017.
+  */
+
+class URLAnalyzeController @Inject()(implicit ws: WSClient) extends Controller with URLAnalyzeService{
 
   implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
 
@@ -27,7 +31,7 @@ class Application @Inject() (implicit ws: WSClient) extends Controller with URLA
   )
 
   def index = Action {
-    Ok(views.html.app())
+    Ok(views.html.index())
   }
 
   def submit = Action.async { implicit request =>

@@ -5,6 +5,7 @@ import org.apache.commons.validator.routines.UrlValidator
 import play.Logger
 import play.api.libs.ws.WSClient
 import org.jsoup.Jsoup
+import org.jsoup.Connection.Method.GET
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -24,7 +25,7 @@ trait URLAnalyzeService {
     }
 
     Logger.info(url)
-    val doc = Jsoup.connect(url).timeout(20*1000).get
+    val doc = Jsoup.connect(url).method(GET).timeout(20*1000).get
     val extractedData = Future.sequence(extractors.map(extractor => {
       futureMa(extractor.getExtractorKey(), extractor.extract(doc).map(_.getOrElse("Undefined")))
     }))

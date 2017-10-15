@@ -2,6 +2,7 @@ package services
 
 import java.net.URL
 
+import org.jsoup.Connection.Method.GET
 import org.jsoup.nodes.{Document, DocumentType}
 import play.api.Logger
 import play.api.libs.ws._
@@ -12,6 +13,7 @@ import collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
+
 /**
   * Created by ERAN on 10/14/2017.
   */
@@ -108,16 +110,18 @@ object LinksValidationExtractor extends DocExtractor {
 
   override def extract(doc: Document)(implicit ws: WSClient, ec: ExecutionContext): Future[Option[String]] = {
     val links = doc.select("a[href]").asScala
-    val result = Future.sequence(links.map(link => {
+    val result = Future.sequence(links.flatMap(link => {
         val linkURL = link.attr("abs:href")
-        val result = ws.url(link.attr("abs:href")).withRequestTimeout(15000 millis).get()
-        result.map(response => linkURL -> response.status.toString).recover{ case t => linkURL ->  t.getMessage}
+        val request = Try(ws.url(link.attr("abs:href")).withMethod("HEAD").withRequestTimeout(15000 millis).get).toOption
+        request.map(_.map(res => {
+          linkURL -> res.status.toString
+        }).recover { case t => linkURL ->  t.getMessage})
     }))
 
     val resultTxt = result.map(res => {
       val sb = new StringBuilder
       res.foreach(linkResponse => {
-        sb.append(linkResponse._1 + "://&ensp/&ensp/&ensp" + linkResponse._2).append("<br/>")
+        sb.append(linkResponse._1 + ":&nbsp&nbsp&nbsp&nbsp&nbsp" + linkResponse._2).append("<br/>")
       })
       Some(sb.mkString)
     })
