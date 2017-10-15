@@ -29,7 +29,7 @@ trait DocExtractor {
 object HTMLVersionExtractor extends DocExtractor {
 
 
-  val htmlVersionPattern = """W3C//DTD [\D]+ (g\d+)""".r
+  val htmlVersionPattern = """W3C//DTD (\S+\s\S+)""".r
 
 
   override def extract(doc: Document)(implicit ws: WSClient, ec: ExecutionContext): Future[Option[String]] = {
