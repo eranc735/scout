@@ -2,9 +2,8 @@ package services
 
 import java.net.URL
 
-import org.jsoup.Connection.Method.GET
 import org.jsoup.nodes.{Document, DocumentType}
-import play.api.Logger
+import play.Logger
 import play.api.libs.ws._
 
 import scala.concurrent.duration._
@@ -13,6 +12,7 @@ import collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
+import scala.util.matching.Regex
 
 /**
   * Created by ERAN on 10/14/2017.
@@ -27,17 +27,26 @@ trait DocExtractor {
 
 object HTMLVersionExtractor extends DocExtractor {
 
+
+  val htmlVersionPattern = new Regex("""-//W3C//DTD )[^/]+#i""")
+
   override def extract(doc: Document)(implicit ws: WSClient, ec: ExecutionContext): Future[Option[String]] = {
-    val docTypes = doc.childNodes.asScala.collect {
+    val versions = doc.childNodes.asScala.collect {
         case docType: DocumentType => {
-          Logger.info(docType.toString)
-        docType.attributes().asScala.map(attr => {
-          Logger.info(attr.getKey + "-" + attr.getValue)
-        })
-        Option(docType.attr("publicid"))
+        val version = if(docType.hasAttr("name") && docType.attr("name") == "html")  {
+          if(docType.hasAttr("publicid") && !docType.attr("publicid").isEmpty) {
+            Logger.info(docType.attr("publicid"))
+            htmlVersionPattern.findFirstIn(docType.attr("publicid"))
+          } else {
+            Some("HTML5")
+          }
+        } else {
+          None
+        }
+        version
       }
     }.flatten
-    Future(Some(docTypes.mkString(",")))
+    Future.successful(versions.lift(0))
   }
 
   override def getExtractorKey(): String = {
