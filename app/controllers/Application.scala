@@ -8,10 +8,12 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.libs.ws.WSClient
 import services._
+import com.twitter.util.Future
 
-class Application @Inject() (implicit ws: WSClient) extends Controller {
+class Application @Inject() (implicit ws: WSClient) extends Controller with URLAnalyzeService{
 
-  val urlAnalysisService: URLAnalyzeService = new URLAnalyzeService()
+  implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
+
 
   val extractors: Seq[DocExtractor] = Seq(
     HTMLVersionExtractor,
@@ -29,9 +31,9 @@ class Application @Inject() (implicit ws: WSClient) extends Controller {
     Ok(views.html.app())
   }
 
-  def submit = Action { implicit request =>
+  def submit = Action.async { implicit request =>
     val url = urlAnalyzerform.bindFromRequest.get
-    val analysisResult = urlAnalysisService.analyze(url.url, extractors)
+    val analysisResult = analyze(url.url, extractors)
     for {
       analysis <- analysisResult
     } yield {

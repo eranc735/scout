@@ -13,6 +13,7 @@ libraryDependencies += "io.gatling.highcharts" % "gatling-charts-highcharts" % "
 libraryDependencies += "io.gatling" % "gatling-test-framework" % "2.2.5" % Test
 libraryDependencies += "org.mockito" % "mockito-all" % "1.9.5" % "test"
 libraryDependencies += "commons-validator" % "commons-validator" % "1.4.0"
+libraryDependencies += "com.twitter" %% "util-collection" % "7.0.0"
 libraryDependencies += "org.jsoup" % "jsoup" % "1.8.3"
 libraryDependencies ++= Seq(
   ws
