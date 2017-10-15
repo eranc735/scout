@@ -37,7 +37,10 @@ trait URLAnalyzeService {
         }))
         extractedData.map(data => Success(URLAnalysis(true, 200, data)))
         }
-      case Failure(t) => Future.successful(Failure[URLAnalysis](t))
+      case Failure(t) => {
+        Logger.error("error occurred while trying to analyze url %s error details: %s".format(url, t.getMessage))
+        Future.successful(Failure[URLAnalysis](t))
+      }
     }
   }
 
