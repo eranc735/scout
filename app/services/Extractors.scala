@@ -124,7 +124,7 @@ object LinksValidationExtractor extends DocExtractor {
     val links = doc.select("a[href]").asScala
     val result = Future.sequence(links.flatMap(link => {
         val linkURL = link.attr("abs:href")
-        val request = Try(ws.url(link.attr("abs:href")).withMethod("HEAD").withRequestTimeout(15000 millis).get).toOption
+        val request = Try(ws.url(link.attr("abs:href")).withMethod("HEAD").withFollowRedirects(true).withRequestTimeout(15000 millis).get).toOption
         request.map(_.map(res => {
           linkURL -> res.status.toString
         }).recover { case t => linkURL ->  t.getMessage})
