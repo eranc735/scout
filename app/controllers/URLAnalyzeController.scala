@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
-import models.URLINFO
+import models.URLInfo
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -13,10 +13,10 @@ import services._
   * Created by ERAN on 10/14/2017.
   */
 
+@Inject
 class URLAnalyzeController @Inject()(implicit ws: WSClient) extends Controller with URLAnalyzeService{
 
   implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
-
 
   val extractors: Seq[DocExtractor] = Seq(
     HTMLVersionExtractor,
@@ -27,7 +27,7 @@ class URLAnalyzeController @Inject()(implicit ws: WSClient) extends Controller w
     LinksValidationExtractor)
 
   val urlAnalyzerform = Form(
-    mapping( "url" -> text)(URLINFO.apply)(URLINFO.unapply)
+    mapping( "url" -> text)(URLInfo.apply)(URLInfo.unapply)
   )
 
   def index = Action {

@@ -5,6 +5,7 @@ import java.net.URL
 import org.jsoup.nodes.{Document, DocumentType}
 import play.Logger
 import play.api.libs.ws._
+import play.api.libs.ws.ning.NingAsyncHttpClientConfigBuilder
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -28,7 +29,8 @@ trait DocExtractor {
 object HTMLVersionExtractor extends DocExtractor {
 
 
-  val htmlVersionPattern = new Regex("""-//W3C//DTD )[^/]+#i""")
+  val htmlVersionPattern = """W3C//DTD [\D]+ (g\d+)""".r
+
 
   override def extract(doc: Document)(implicit ws: WSClient, ec: ExecutionContext): Future[Option[String]] = {
     val versions = doc.childNodes.asScala.collect {
@@ -36,7 +38,8 @@ object HTMLVersionExtractor extends DocExtractor {
         val version = if(docType.hasAttr("name") && docType.attr("name") == "html")  {
           if(docType.hasAttr("publicid") && !docType.attr("publicid").isEmpty) {
             Logger.info(docType.attr("publicid"))
-            htmlVersionPattern.findFirstIn(docType.attr("publicid"))
+            val matched  = htmlVersionPattern.findFirstMatchIn(docType.attr("publicid"))
+            matched.map(m => m.group(1))
           } else {
             Some("HTML5")
           }
@@ -101,7 +104,6 @@ object HLinksCounterExtractor extends DocExtractor {
     "HyperMedia-Links-Counter"
   }
 }
-
 
 object ContainsLoginPageExtractor extends DocExtractor {
 

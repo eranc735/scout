@@ -18,13 +18,13 @@ trait URLAnalyzeService {
   implicit val ec: ExecutionContext
 
   import scala.language.implicitConversions
+
   def analyze(url: String, extractors: Seq[DocExtractor])(implicit ws: WSClient): Future[URLAnalysis] = { // to use Either in here? or object or error message?
     val urlValidator: UrlValidator = new UrlValidator()
     if(!urlValidator.isValid(url)) {
       return  Future.successful(URLAnalysis(false, Some(500), Seq.empty))
     }
 
-    Logger.info(url)
     val doc = Jsoup.connect(url).method(GET).timeout(20*1000).get
     val extractedData = Future.sequence(extractors.map(extractor => {
       futureMa(extractor.getExtractorKey(), extractor.extract(doc).map(_.getOrElse("Undefined")))
