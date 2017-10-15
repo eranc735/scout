@@ -8,7 +8,6 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.libs.ws.WSClient
 import services._
-import com.twitter.util.Future
 
 class Application @Inject() (implicit ws: WSClient) extends Controller with URLAnalyzeService{
 

@@ -10,10 +10,8 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.{ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
-import com.twitter.util.Future
-
 /**
   * Created by ERAN on 10/14/2017.
   */
@@ -111,16 +109,17 @@ object LinksValidationExtractor extends DocExtractor {
   override def extract(doc: Document)(implicit ws: WSClient, ec: ExecutionContext): Future[Option[String]] = {
     val links = doc.select("a[href]").asScala
     val result = Future.sequence(links.map(link => {
-      link.liftT
         val linkURL = link.attr("abs:href")
-        val result = (ws.url(link.attr("abs:href")).withRequestTimeout(30000 millis).get())
-        result.map(response => linkURL -> response.status)
+        val result = ws.url(link.attr("abs:href")).withRequestTimeout(15000 millis).get()
+        result.map(response => linkURL -> response.status.toString).recover{ case t => linkURL ->  t.getMessage}
     }))
 
     val resultTxt = result.map(res => {
       val sb = new StringBuilder
-      res.foreach(tuple => sb.append(tuple._1 + ":" + tuple._2 + "\n"))
-      Some(sb.toString())
+      res.foreach(linkResponse => {
+        sb.append(linkResponse._1 + "://&ensp/&ensp/&ensp" + linkResponse._2).append("<br/>")
+      })
+      Some(sb.mkString)
     })
     resultTxt
   }
