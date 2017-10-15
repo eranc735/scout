@@ -11,6 +11,7 @@ import play.api.libs.ws.WSClient
 import services._
 
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 /**
   * Created by ERAN on 10/14/2017.
@@ -48,13 +49,21 @@ class URLAnalyzeController @Inject()(implicit ws: WSClient) extends Controller w
         for {
           analysis <- analysisResult
         } yield {
-           if(!analysis.isValid) {
-             BadRequest("Cant Parse URL: %s".format(url.url))
-           }
-           else if(analysis.status != 200) {
-             Status(analysis.status)("Error occured while trying to analyze %s".format(url.url))
-           }
-           Ok(views.html.analysis(analysis.data))
+          analysis match {
+            case Success(analysis) => {
+              if(!analysis.isValid) {
+                BadRequest("Cant Parse URL: %s".format(url.url))
+              }
+              else if(analysis.status != OK) {
+                Status(analysis.status)("Error occured while trying to analyze %s".format(url.url))
+              }
+              Ok(views.html.analysis(analysis.data))
+            }
+            case Failure(t) => {
+              BadRequest("Error occurred during url analysis. Error msg: %s".format(t.getMessage))
+            }
+          }
+
          }
      })
   }
