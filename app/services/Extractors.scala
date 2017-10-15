@@ -5,7 +5,6 @@ import java.net.URL
 import org.jsoup.nodes.{Document, DocumentType}
 import play.Logger
 import play.api.libs.ws._
-import play.api.libs.ws.ning.NingAsyncHttpClientConfigBuilder
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
