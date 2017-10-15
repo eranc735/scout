@@ -6,4 +6,6 @@ package models
 case class URLAnalysis(
  isValid: Boolean,
  status: Int,
- data: Seq[(String, String)])
+ data: Seq[AnalysisElement])
+
+case class AnalysisElement(key: String, value: String)

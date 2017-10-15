@@ -1,6 +1,6 @@
 package services
 
-import models.URLAnalysis
+import models.{AnalysisElement, URLAnalysis}
 import org.apache.commons.validator.routines.UrlValidator
 import play.Logger
 import play.api.libs.ws.WSClient
@@ -20,6 +20,7 @@ trait URLAnalyzeService {
   import scala.language.implicitConversions
 
   val STATUS_UNDEFINED = -1
+  val UNDEFINED = "Undefined"
 
   def analyze(url: String, extractors: Seq[DocExtractor])(implicit ws: WSClient): Future[URLAnalysis] = {
     val urlValidator: UrlValidator = new UrlValidator()
@@ -28,15 +29,10 @@ trait URLAnalyzeService {
     }
     val doc = Jsoup.connect(url).method(GET).timeout(20*1000).get
     val extractedData = Future.sequence(extractors.map(extractor => {
-      elementFuture(extractor.getExtractorKey(), extractor.extract(doc).map(_.getOrElse("Undefined")))
+      extractor.extract(doc).map(value => AnalysisElement(extractor.getExtractorKey(), value.getOrElse(UNDEFINED)))
     }))
     extractedData.map(data => URLAnalysis(true, 200, data))
   }
 
-  implicit def elementFuture(key:String, value: Future[String]): Future[(String, String)] = {
-    for {
-      v <- value
-    } yield (key, v)
-  }
-
 }
+

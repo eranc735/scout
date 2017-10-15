@@ -1,4 +1,4 @@
-@(analysis: Seq[(String, String)])
+@(analysis: Seq[AnalysisElement])
 
 <!DOCTYPE html>
 <html>
@@ -14,10 +14,10 @@
             <th>Attribute Name</th>
             <th>Attribute Value</th>
         </tdr>
-        @analysis.map { data =>
+        @analysis.map { element =>
          <tr>
-             <td>@data._1</td>
-             <td>@Html(data._2)</td>
+             <td>@element.key</td>
+             <td>@Html(element.value)</td>
          </tr>
         }
         </tbody>

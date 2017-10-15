@@ -13,7 +13,6 @@ import collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
-import scala.util.matching.Regex
 
 /**
   * Created by ERAN on 10/14/2017.
