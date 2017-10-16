@@ -24,7 +24,6 @@ object HTMLVersionExtractor extends DocExtractor {
       case docType: DocumentType => {
         val version = if (docType.hasAttr("name") && docType.attr("name") == "html") {
           if (docType.hasAttr("publicid") && !docType.attr("publicid").isEmpty) {
-            Logger.info(docType.attr("publicid"))
             val matched = htmlVersionPattern.findFirstMatchIn(docType.attr("publicid"))
             matched.map(m => m.group(1))
           } else {

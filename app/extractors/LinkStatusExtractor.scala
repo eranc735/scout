@@ -16,11 +16,13 @@ import collection.JavaConverters._
 
 object LinkStatusExtractor extends DocExtractor {
 
+  val maxTimeout = Duration(15, SECONDS)
+
   override def extract(doc: Document)(implicit ws: WSClient, ec: ExecutionContext): Future[Option[String]] = {
     val links = doc.select("a[href]").asScala
     val result = Future.sequence(links.flatMap(link => {
       val linkURL = link.attr("abs:href")
-      val request = Try(ws.url(link.attr("abs:href")).withMethod("HEAD").withFollowRedirects(true).withRequestTimeout(15000 millis).get).toOption
+      val request = Try(ws.url(link.attr("abs:href")).withMethod("HEAD").withFollowRedirects(true).withRequestTimeout(maxTimeout).get).toOption
       request.map(_.map(res => {
         linkURL -> res.status.toString
       }).recover { case t => linkURL ->  t.getMessage})
