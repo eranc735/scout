@@ -32,18 +32,20 @@ trait URLAnalyzeService {
     }
     val document = Try(Jsoup.connect(url).method(GET).timeout(maxTimeOut).get)
     document match {
-      case doc: Success[Document] => {
-        val extractedData = Future.sequence(extractors.map(extractor => {
-          extractor.extract(doc.get).map(value => AnalysisElement(extractor.getExtractorKey(), value.getOrElse(UNDEFINED)))
-        }))
-        extractedData.map(data => Success(URLAnalysis(true, 200, data)))
-        }
+      case doc: Success[Document] => extractFromDoc(doc.get, extractors)
       case Failure(t) => {
         Logger.error("error occurred while trying to analyze url %s error details: %s".format(url, t.getMessage))
         Future.successful(Failure[URLAnalysis](t))
       }
     }
   }
+
+    def extractFromDoc(doc: Document, extractors: Seq[DocExtractor])(implicit ws: WSClient) = {
+      val extractedData = Future.sequence(extractors.map(extractor => {
+        extractor.extract(doc).map(value => AnalysisElement(extractor.getExtractorKey(), value.getOrElse(UNDEFINED)))
+      }))
+      extractedData.map(data => Success(URLAnalysis(true, 200, data)))
+    }
 
 }
 

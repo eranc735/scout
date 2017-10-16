@@ -1,8 +1,8 @@
 package services.unit
 
+import extractors.TitleExtractor
 import org.jsoup.nodes.Document
 import play.api.mvc.Results
-import services.TitleExtractor
 import org.scalatest.mockito.MockitoSugar
 import org.mockito.Mockito._
 import org.scalatest._
@@ -13,7 +13,7 @@ import scala.concurrent.duration.{Duration, SECONDS}
 
 
 /**
-  * Created by ERAN on 10/16/2017.
+  * Created by ERAN on 10/15/2017.
   */
 class TitleExtractorSpec extends FlatSpec with Results with MockitoSugar {
 

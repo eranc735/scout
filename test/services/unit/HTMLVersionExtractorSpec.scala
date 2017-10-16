@@ -1,19 +1,20 @@
 package services.unit
 
+import extractors.HeadingsLevelCountersExtractor
 import org.jsoup.nodes.{Document, DocumentType, Node}
 import org.mockito.Mockito.when
 import org.scalatest.FlatSpec
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.ws.WSClient
 import play.api.mvc.Results
-import services.{HTMLVersionExtractor, HeadingsLevelCountersExtractor}
 
-import collection.JavaConverters._
 import scala.concurrent.Await
 import scala.concurrent.duration.{Duration, SECONDS}
 
+import collection.JavaConverters._
+
 /**
-  * Created by ERAN on 10/16/2017.
+  * Created by ERAN on 10/15/2017.
   */
 class HTMLVersionExtractorSpec extends FlatSpec with Results with MockitoSugar {
 
