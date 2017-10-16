@@ -28,7 +28,7 @@ class URLAnalyzeController @Inject()(implicit ws: WSClient) extends Controller w
     TitleExtractor,
     HLinksCounterExtractor,
     ContainsLoginPageExtractor,
-    LinksValidationExtractor)
+    LinkStatusExtractor)
 
   val urlAnalyzerform = Form(
     mapping( "url" -> text)(URLInfo.apply)(URLInfo.unapply)

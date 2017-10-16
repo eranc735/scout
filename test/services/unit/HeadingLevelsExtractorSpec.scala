@@ -18,7 +18,7 @@ import collection.JavaConverters._
 /**
   * Created by ERAN on 10/15/2017.
   */
-class HeadingLevelsSpec extends FlatSpec with Results with MockitoSugar{
+class HeadingLevelsExtractorSpec extends FlatSpec with Results with MockitoSugar{
 
   implicit val wsClient: WSClient = mock[WSClient]
   implicit val ec = scala.concurrent.ExecutionContext.Implicits.global

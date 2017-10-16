@@ -19,10 +19,10 @@ object HLinksCounterExtractor extends DocExtractor {
   override def extract(doc: Document)(implicit ws: WSClient, ec: ExecutionContext): Future[Option[String]] = {
     val documentDomain = (new URL(doc.baseUri())).getHost
     val linksDomains = doc.select("a[href]").asScala.flatMap(link => {
-      Try(new URL(link.attr("abs:href"))).toOption
+      Try(new URL(link.attr("abs:href"))).toOption.map(link => link.getHost)
     })
-    val (internalLinksCounter, externalLinksCounter) = linksDomains.foldLeft((0,0))((counters, link) => {
-      if(link == documentDomain) (counters._1 + 1, counters._2) else (counters._1, counters._2 + 1)
+    val (internalLinksCounter, externalLinksCounter) = linksDomains.foldLeft((0,0))((counters, linkHost) => {
+      if(linkHost == documentDomain) (counters._1 + 1, counters._2) else (counters._1, counters._2 + 1)
     })
     Future.successful(Option((f"$internalLinksCounter Internal links $externalLinksCounter External links")))
   }

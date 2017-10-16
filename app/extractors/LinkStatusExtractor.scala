@@ -14,7 +14,7 @@ import collection.JavaConverters._
   * Created by ERAN on 10/15/2017.
   */
 
-object LinksValidationExtractor extends DocExtractor {
+object LinkStatusExtractor extends DocExtractor {
 
   override def extract(doc: Document)(implicit ws: WSClient, ec: ExecutionContext): Future[Option[String]] = {
     val links = doc.select("a[href]").asScala
