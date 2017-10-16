@@ -29,7 +29,7 @@ case class DocElement(key: String, value: String)
 object HTMLVersionExtractor extends DocExtractor {
 
 
-  val htmlVersionPattern = """W3C//DTD (\S+\s\S+)""".r
+  val htmlVersionPattern = """W3C//DTD (\w+\s[\d.]+)""".r
 
 
   override def extract(doc: Document)(implicit ws: WSClient, ec: ExecutionContext): Future[Option[String]] = {
@@ -79,7 +79,7 @@ object HeadingsLevelCountersExtractor extends DocExtractor {
 object TitleExtractor extends DocExtractor {
 
   override def extract(doc: Document)(implicit ws: WSClient, ec: ExecutionContext): Future[Option[String]] = {
-    Future.successful(Some(doc.title()))
+    Future.successful(Option(doc.title()))
   }
 
   override def getExtractorKey(): String = {
