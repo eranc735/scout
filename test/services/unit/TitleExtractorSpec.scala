@@ -4,7 +4,6 @@ import org.jsoup.nodes.Document
 import play.api.mvc.Results
 import services.TitleExtractor
 import org.scalatest.mockito.MockitoSugar
-import play.api.libs.concurrent.Execution.Implicits._
 import org.mockito.Mockito._
 import org.scalatest._
 import play.api.libs.ws.WSClient
