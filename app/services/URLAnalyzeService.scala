@@ -7,6 +7,7 @@ import play.api.libs.ws.WSClient
 import org.jsoup.Jsoup
 import org.jsoup.Connection.Method.GET
 import URLAnalyzeService._
+import extractors.DocExtractor
 import org.jsoup.nodes.Document
 
 import scala.concurrent.{ExecutionContext, Future}

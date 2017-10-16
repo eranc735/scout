@@ -6,9 +6,9 @@ import org.scalatest.FlatSpec
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.ws.WSClient
 import play.api.mvc.Results
-import services.HTMLVersionExtractor
-import collection.JavaConverters._
+import services.{HTMLVersionExtractor, HeadingsLevelCountersExtractor}
 
+import collection.JavaConverters._
 import scala.concurrent.Await
 import scala.concurrent.duration.{Duration, SECONDS}
 
@@ -20,7 +20,7 @@ class HTMLVersionExtractorSpec extends FlatSpec with Results with MockitoSugar {
   implicit val wsClient: WSClient = mock[WSClient]
   implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
 
-  val extractor = HTMLVersionExtractor
+  val extractor = HeadingsLevelCountersExtractor
   val doc = mock[Document]
 
   "version" should "be HTML5" in {
